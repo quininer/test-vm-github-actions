@@ -1,0 +1,30 @@
+name: ci
+
+on: [push, pull_request]
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        target:
+          - x86_64-unknown-linux-gnu
+
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          profile: minimal
+          override: true
+      - uses: actions-rs/cargo@v1
+        with:
+          command: run
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: vmlinux
+          path: kernel-build/vmlinux
